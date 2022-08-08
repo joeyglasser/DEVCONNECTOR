@@ -2,6 +2,7 @@ import api from "../utils/api";
 import { setAlert } from "./alert";
 import {
   GET_POSTS,
+  GET_POST,
   POST_ERROR,
   UPDATE_LIKES,
   DELETE_POST,
@@ -14,6 +15,22 @@ export const getPosts = () => async (dispatch) => {
     const res = await api.get("/posts");
     dispatch({
       type: GET_POSTS,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: POST_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
+
+// Get posts
+export const getPost = (postId) => async (dispatch) => {
+  try {
+    const res = await api.get(`/posts/${postId}`);
+    dispatch({
+      type: GET_POST,
       payload: res.data,
     });
   } catch (err) {
