@@ -7,8 +7,14 @@ import PostItem from "../posts/PostItem";
 import CommentForm from "../post/CommentForm";
 import CommentItem from "../post/CommentItem";
 import { getPost } from "../../actions/post";
+import Posts from "../posts/Posts";
 
 const Post = ({ getPost, post: { post, loading }, match }) => {
+  // Sorting comments by oldest
+  if (post && post.comments) {
+    post.comments.sort((c1, c2) => (c2.date < c1.date ? 1 : -1));
+  }
+
   useEffect(() => {
     getPost(match.params.id);
   }, [getPost]);
