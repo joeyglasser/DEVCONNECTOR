@@ -9,15 +9,30 @@ import CommentItem from "../post/CommentItem";
 import { getPost } from "../../actions/post";
 import Posts from "../posts/Posts";
 
-const Post = ({ getPost, post: { post, loading }, match }) => {
-  // Sorting comments by oldest
-  if (post && post.comments) {
-    post.comments.sort((c1, c2) => (c2.date < c1.date ? 1 : -1));
+// Sorting function by date
+function dateSort(o1, o2) {
+  if (o1.date < o2.date) {
+    return -1;
+  } else if (o1.date > o2.date) {
+    return 1;
+  } else {
+    return 0;
   }
+}
 
+// Transforms comment object into CommentItems and sorts
+function commentLoader(comments, _id) {
+  comments.sort(dateSort);
+  return comments.map((comment) => (
+    <CommentItem key={comment._id} comment={comment} postId={_id} />
+  ));
+}
+
+const Post = ({ getPost, post: { post, loading }, match }) => {
   useEffect(() => {
     getPost(match.params.id);
   }, [getPost]);
+
   return loading || post === null ? (
     <Spinner />
   ) : (
@@ -27,11 +42,7 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
       </Link>
       <PostItem post={post} showActions={false}></PostItem>
       <CommentForm postId={post._id} />
-      <div className="comments">
-        {post.comments.map((comment) => (
-          <CommentItem key={comment._id} comment={comment} postId={post._id} />
-        ))}
-      </div>
+      <div className="comments">{commentLoader(post.comments, post._id)}</div>
     </Fragment>
   );
 };

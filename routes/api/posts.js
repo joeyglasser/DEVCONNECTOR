@@ -176,6 +176,7 @@ router.post(
         name: user.name,
         avatar: user.avatar,
         user: req.user.id,
+        date: Date.now(),
       };
 
       post.comments.unshift(newComment);
